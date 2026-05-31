@@ -8,7 +8,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  collection, doc, onSnapshot, query, where, orderBy, updateDoc, getDocs, limit, startAfter, serverTimestamp,
+  collection, doc, onSnapshot, query, where, orderBy, updateDoc, getDocs, limit, serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { COLLECTIONS } from '../../config/firestore.config';
@@ -16,8 +16,8 @@ import type { Grievance } from '../../types/grievance.types';
 import type { UserProfile } from '../../types/auth.types';
 import { ROLES } from '../../config/constants';
 import {
-  Search, AlertTriangle, ShieldCheck, ShieldAlert, Check, X,
-  ChevronDown, MapPin, Eye, Brain, Clock, ChevronLeft, ChevronRight, Loader2,
+  Search, ShieldCheck, ShieldAlert, Check, X,
+  ChevronDown, MapPin, Eye, Brain, Clock, Loader2,
 } from 'lucide-react';
 import { fadeInUpVariants, staggerContainerVariants } from '../../animations/variants';
 
@@ -57,9 +57,6 @@ export default function AdminIssues() {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Pagination states
-  const [lastVisibleDoc, setLastVisibleDoc] = useState<any>(null);
-  const [docsHistory, setDocsHistory] = useState<any[]>([]);
-  const [pageIndex, setPageIndex] = useState(0);
 
   // Detail Drawer
   const [selectedIssue, setSelectedIssue] = useState<Grievance | null>(null);
@@ -84,7 +81,6 @@ export default function AdminIssues() {
 
     const unsub = onSnapshot(q, snap => {
       setIssues(snap.docs.map(d => ({ id: d.id, ...d.data() } as Grievance)));
-      setLastVisibleDoc(snap.docs[snap.docs.length - 1] || null);
       setLoading(false);
     }, () => setLoading(false));
 
@@ -258,8 +254,8 @@ export default function AdminIssues() {
                     <td className="px-4 py-3 font-mono text-[10px] text-zinc-400">{issue.wardId || '—'}</td>
                     <td className="px-4 py-3">
                       <button
-                        onClick={() => handleVerify(issue.id, !!issue.isVerified)}
-                        className={`p-1 rounded transition-colors ${issue.isVerified ? 'text-green-400 bg-green-950/20' : 'text-zinc-500 hover:text-green-400'}`}
+                        onClick={() => handleVerify(issue.id, !!(issue as any).isVerified)}
+                        className={`p-1 rounded transition-colors ${(issue as any).isVerified ? 'text-green-400 bg-green-950/20' : 'text-zinc-500 hover:text-green-400'}`}
                       >
                         <ShieldCheck className="w-4 h-4" />
                       </button>

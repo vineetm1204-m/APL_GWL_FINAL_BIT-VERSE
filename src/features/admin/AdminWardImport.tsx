@@ -10,7 +10,7 @@
 import { useCallback, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  collection, doc, getDoc, setDoc, serverTimestamp,
+  doc, getDoc, setDoc, serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { COLLECTIONS } from '../../config/firestore.config';

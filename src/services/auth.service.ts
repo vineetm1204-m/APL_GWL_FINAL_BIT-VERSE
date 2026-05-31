@@ -21,7 +21,6 @@ import {
   doc,
   setDoc,
   getDoc,
-  updateDoc,
   serverTimestamp,
 } from 'firebase/firestore';
 import { auth, db } from '../config/firebase';
@@ -276,7 +275,3 @@ export async function updateUserProfile(
 
 // ─── Helpers ─────────────────────────────────────────────────────────
 
-async function getLoginCount(uid: string): Promise<number> {
-  const profile = await getUserProfile(uid);
-  return profile?.metadata.loginCount ?? 0;
-}

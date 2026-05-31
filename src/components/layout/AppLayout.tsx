@@ -17,7 +17,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Activity,
-  User,
   LogOut,
   Bell,
   Map,

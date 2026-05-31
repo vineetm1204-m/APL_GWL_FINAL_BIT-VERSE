@@ -13,9 +13,9 @@ import {
   collection, doc, onSnapshot, query, writeBatch, setDoc, getDocs, where, limit, orderBy, serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { COLLECTIONS } from '../../config/firestore.config';
+import { COLLECTIONS, SUBCOLLECTIONS } from '../../config/firestore.config';
 import {
-  Bell, Send, Trash2, ShieldAlert, Check, X, Megaphone, Loader2,
+  Bell, Send, Check, X, Megaphone, Loader2,
 } from 'lucide-react';
 import { fadeInUpVariants, staggerContainerVariants } from '../../animations/variants';
 
@@ -91,7 +91,7 @@ export default function AdminNotifications() {
       // Batch write up to 500 notifications at a time to prevent scaling limits
       const batch = writeBatch(db);
       userSnap.docs.forEach(userDoc => {
-        const notifRef = doc(collection(db, COLLECTIONS.NOTIFICATIONS));
+        const notifRef = doc(collection(db, COLLECTIONS.USERS, userDoc.id, SUBCOLLECTIONS.USER_NOTIFICATIONS));
         batch.set(notifRef, {
           userId: userDoc.id,
           title,

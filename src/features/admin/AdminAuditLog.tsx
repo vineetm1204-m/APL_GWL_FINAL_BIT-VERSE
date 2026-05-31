@@ -12,9 +12,8 @@ import {
   collection, onSnapshot, query, orderBy, limit,
 } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { COLLECTIONS } from '../../config/firestore.config';
 import {
-  ShieldAlert, Activity, Cpu, Clock, Terminal, Loader2,
+  Cpu, Clock, Terminal, Loader2,
 } from 'lucide-react';
 import { fadeInUpVariants, staggerContainerVariants } from '../../animations/variants';
 

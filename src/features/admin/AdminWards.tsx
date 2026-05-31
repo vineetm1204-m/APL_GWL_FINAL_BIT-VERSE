@@ -17,7 +17,7 @@ import type { UserProfile } from '../../types/auth.types';
 import type { Grievance } from '../../types/grievance.types';
 import { ROLES } from '../../config/constants';
 import {
-  MapPin, X, Shield, TrendingDown, Loader2, ChevronDown, AlertCircle,
+  MapPin, X, Shield, Loader2, ChevronDown, AlertCircle,
 } from 'lucide-react';
 import { fadeInUpVariants, staggerContainerVariants } from '../../animations/variants';
 

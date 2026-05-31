@@ -17,7 +17,7 @@ import type { Grievance } from '../../types/grievance.types';
 import type { UserProfile } from '../../types/auth.types';
 import { ROLES } from '../../config/constants';
 import {
-  AlertTriangle, ArrowUpRight, Check, X, ShieldAlert, Users,
+  ArrowUpRight, Check, X, ShieldAlert, Users,
   ChevronDown, History, Loader2,
 } from 'lucide-react';
 import { fadeInUpVariants, staggerContainerVariants } from '../../animations/variants';
@@ -197,7 +197,7 @@ export default function AdminEscalations() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <span className="font-mono text-[9px] text-red-400 font-black tracking-widest uppercase bg-red-950/40 border border-red-900/30 px-2 py-0.5 rounded">
-                        LEVEL {issue.escalationLevel ?? 1}
+                        LEVEL {(issue as any).escalationLevel ?? 1}
                       </span>
                       <h3 className="font-bold text-zinc-200 text-sm mt-2 leading-snug">{issue.title}</h3>
                       <p className="font-mono text-[9px] text-zinc-500 mt-1">WARD ID: {issue.wardId || '—'}</p>
@@ -229,7 +229,7 @@ export default function AdminEscalations() {
                       <ChevronDown className="w-3 h-3 text-zinc-500 absolute right-2 top-2.5 pointer-events-none" />
                     </div>
 
-                    {issue.escalationLevel === 1 && (
+                    {(issue as any).escalationLevel === 1 && (
                       <button
                         onClick={() => handleEscalateToCommissioner(issue.id)}
                         className="h-8 px-2.5 rounded bg-red-950/20 border border-red-800/30 text-red-400 hover:bg-red-900/20 text-[9px] font-mono font-bold uppercase transition-colors inline-flex items-center gap-1"
