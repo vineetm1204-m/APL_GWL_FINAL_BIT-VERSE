@@ -44,6 +44,7 @@ export default function ScrollFrameSection({
   canvasResolution,
 }: ScrollFrameSectionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const pinnedRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const scrollObjRef = useRef({ frame: 0 });
@@ -111,7 +112,8 @@ export default function ScrollFrameSection({
       const img = imagesRef.current[frameIndex];
       if (!img) return;
 
-      const rect = canvas.getBoundingClientRect();
+      const parent = pinnedRef.current;
+      const rect = parent ? parent.getBoundingClientRect() : canvas.getBoundingClientRect();
       const dpr = canvasResolution || window.devicePixelRatio || 1;
 
       // Set actual pixel dimensions for the canvas to ensure crisp graphics
@@ -167,7 +169,7 @@ export default function ScrollFrameSection({
         start: startTrigger,
         end: endTrigger || `+=${sectionHeight}`,
         scrub: scrubSpeed,
-        pin: pinSection,
+        pin: pinSection ? pinnedRef.current : false,
         anticipatePin: 1,
         invalidateOnRefresh: true,
       },
@@ -197,10 +199,30 @@ export default function ScrollFrameSection({
     <div
       ref={containerRef}
       style={{ height: loaded ? sectionHeight : '100vh' }}
-      className="relative w-full bg-[#030303] overflow-hidden select-none"
+      className="relative w-full bg-[#030303] overflow-visible select-none"
     >
-      <AnimatePresence mode="wait">
-        {!loaded ? (
+      {/* Pinned Viewport Container (Always Mounted to avoid conditional ref race-conditions) */}
+      <div
+        ref={pinnedRef}
+        className="relative w-full h-screen overflow-hidden flex items-center justify-center bg-black"
+      >
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block object-cover" />
+
+        {/* Glowing Border Accents for Cinematic Tech Feel */}
+        <div className="absolute inset-0 border border-zinc-900/30 pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-purple-500/10 to-transparent pointer-events-none" />
+
+        {loaded && overlayContent && (
+          <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-6 lg:p-12">
+            {overlayContent}
+          </div>
+        )}
+      </div>
+
+      {/* Cyberpunk Telemetry Loading HUD Overlay */}
+      <AnimatePresence>
+        {!loaded && (
           <motion.div
             key="loader"
             initial={{ opacity: 1 }}
@@ -208,7 +230,6 @@ export default function ScrollFrameSection({
             transition={{ duration: 0.6, ease: 'easeInOut' }}
             className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-[#030303] px-6"
           >
-            {/* Cyberpunk Telemetry Loading HUD */}
             <div className="w-full max-w-md p-8 rounded-xl border border-cyan-500/10 bg-zinc-950/80 backdrop-blur-md flex flex-col items-center gap-6 shadow-[0_0_50px_rgba(6,182,212,0.03)] font-mono text-xs">
               <div className="flex items-center gap-3 text-cyan-400">
                 <Activity className="w-5 h-5 animate-pulse" />
@@ -262,27 +283,6 @@ export default function ScrollFrameSection({
                 )}
               </div>
             </div>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="canvas-container"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center bg-black"
-          >
-            <canvas ref={canvasRef} className="w-full h-full block object-cover" />
-
-            {/* Glowing Border Accents for Cinematic Tech Feel */}
-            <div className="absolute inset-0 border border-zinc-900/30 pointer-events-none" />
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent pointer-events-none" />
-            <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-purple-500/10 to-transparent pointer-events-none" />
-
-            {overlayContent && (
-              <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-6 lg:p-12">
-                {overlayContent}
-              </div>
-            )}
           </motion.div>
         )}
       </AnimatePresence>
