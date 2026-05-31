@@ -30,6 +30,7 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import InteractiveGlobe from '../../components/three/InteractiveGlobe';
+import ScrollFrameSection from '../../components/ui/ScrollFrameSection';
 import { ROUTES } from '../../config/routes';
 import { useAuthStore } from '../../stores/auth.store';
 import {
@@ -544,6 +545,52 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* ─── Section 5.5: Scroll Frame Storytelling ──────────────────── */}
+      <ScrollFrameSection
+        framesFolder="/frames/ezgif-3808e782c1d6e57b-png-split"
+        frameCount={50}
+        sectionHeight="300vh"
+        pinSection={true}
+        objectFit="cover"
+        scrubSpeed={0.5}
+        overlayContent={
+          <>
+            {/* Top-Left Telemetry */}
+            <div className="flex flex-col gap-1 font-mono text-[9px] text-zinc-500 uppercase tracking-widest bg-zinc-950/40 backdrop-blur-sm p-3 rounded-lg border border-zinc-900/30 max-w-fit pointer-events-none">
+              <span className="text-cyan-400 font-bold flex items-center gap-1.5">
+                <Activity className="w-3.5 h-3.5" /> SYSTEM_VISUALIZATION // SPATIAL_FLOW
+              </span>
+              <span>INGESTION_STATUS: ACTIVE</span>
+              <span>DENSITY_MESH: 50_LAYERS_OPTIMIZED</span>
+              <span>REF_LOC: RAMGARHTAL_GRID</span>
+            </div>
+
+            {/* Top-Right Telemetry */}
+            <div className="ml-auto font-mono text-[9px] text-purple-400 border border-purple-500/20 bg-purple-950/10 px-3.5 py-1.5 rounded-full backdrop-blur-md flex items-center gap-2 pointer-events-none shadow-[0_0_15px_rgba(168,85,247,0.1)]">
+              <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-ping" />
+              <span>3D_SCROLL_STORYTELLING_ACTIVE</span>
+            </div>
+
+            {/* Bottom Panel (Narrative & Control Instruction) */}
+            <div className="mt-auto max-w-lg bg-zinc-950/85 border border-zinc-900 p-6 rounded-xl backdrop-blur-md flex flex-col gap-3 shadow-[0_15px_40px_rgba(0,0,0,0.8)] pointer-events-auto hover:border-cyan-500/20 transition-all duration-300">
+              <span className="font-mono text-[10px] text-cyan-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" /> SPATIAL DISPATCH TIMELINE
+              </span>
+              <h3 className="text-xl font-display font-black text-white leading-tight">
+                Spatially Audited Civic Telemetry
+              </h3>
+              <p className="font-sans text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                Observe the high-fidelity structural diagnostic sequence. Scroll slowly to inspect the frame-by-frame public ledger. The system utilizes Gemini Flash Vision cognitive classification models.
+              </p>
+              <div className="flex items-center justify-between pt-2 border-t border-zinc-900 font-mono text-[8px] text-zinc-500 uppercase tracking-widest">
+                <span>SCROLL TO STEP THROUGH</span>
+                <span>FRAME // 01-50</span>
+              </div>
+            </div>
+          </>
+        }
+      />
 
       {/* ─── Section 6: Authority Dashboard Preview ─────────────────── */}
       <section id="authority" className="py-24 border-t border-zinc-900 bg-[#070709] relative px-6 lg:px-12">
