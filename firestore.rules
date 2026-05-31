@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function getUserRole() {
+      return getUserData().role;
+    }
+
+    function isCitizen() {
+      return getUserRole() == 'citizen';
+    }
+
+    function isWardOfficer() {
+      return getUserRole() == 'ward_officer';
+    }
+
+    function isDeptHead() {
+      return getUserRole() == 'department_head';
+    }
+
+    function isCityAdmin() {
+      return getUserRole() == 'city_admin';
+    }
+
+    function isSuperAdmin() {
+      return getUserRole() == 'super_admin';
+    }
+
+    // ─── User Profile Access ─────────────────────────────────────────
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && (request.auth.uid == userId || isSuperAdmin());
+    }
+
+    // ─── Grievance Collection Access ─────────────────────────────────
+    match /grievances/{grievanceId} {
+      // Transparency layer: Anyone authenticated can read all reports
+      allow read: if isAuthenticated();
+      
+      // Citizens can report issues.
+      allow create: if isAuthenticated() && isCitizen();
+      
+      // Updates can be done by:
+      // 1. Super Admins or City Admins
+      // 2. Ward Officers if assigned to their ward
+      // 3. The citizen who reported it, but only if they are upvoting
+      allow update: if isAuthenticated() && (
+        isSuperAdmin() ||
+        isCityAdmin() ||
+        (isWardOfficer() && resource.data.wardId == getUserData().wardId) ||
+        (isCitizen() && (
+          // Citizen can only modify the upvotes count and upvotedBy array
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvotes', 'upvotedBy'])
+        ))
+      );
+
+      allow delete: if isAuthenticated() && (isSuperAdmin() || isCityAdmin());
+    }
+
+    // ─── Wards Collection Access ─────────────────────────────────────
+    match /wards/{wardId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && (isSuperAdmin() || isCityAdmin());
+    }
+
+    // ─── Categories Collection Access ────────────────────────────────
+    match /categories/{categoryId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && (isSuperAdmin() || isCityAdmin());
+    }
+  }
+}

@@ -1,0 +1,27 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isSafeImageOrDocument() {
+      return request.resource.contentType.matches('image/.*') || 
+             request.resource.contentType == 'application/pdf';
+    }
+
+    function isUnderLimit(maxMegaBytes) {
+      return request.resource.size < maxMegaBytes * 1024 * 1024;
+    }
+
+    // ─── Grievance Attachments ───────────────────────────────────────
+    match /grievances/{grievanceId}/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && 
+                      isSafeImageOrDocument() && 
+                      isUnderLimit(10);
+    }
+  }
+}
